@@ -115,3 +115,27 @@ if __name__ == '__main__':
     app.run(port=port, host=host)
 ```
 
+We'll go more in depth with Flask later but for a quick look at the code.  The first two lines import packages, namely Flask and os which we use in the entry point to get values for environment variables.  The next two lines create an instance of Flask and turn on debugging so that if (when) errors happen we will see a nice stack trace in the browser.  (Of course this should __NEVER__ be enabled in a production application.)  The `route()` decorator tells Flask that when it receives a request for the root of the site to invoke the `index()` function.  That function merely returns a string which Flask will wrap in an HTTP response and send back to the browser.  The entry point extracts values for environment variables named _PORT_ and _IP_.  This is because if the application is started on a certain port and ip address that Cloud9 has reserved, the application will be accessible to the public web via a special URL.  These are stored in the environment variables.  The last line starts Flask on the port and ip we retrieved before.
+
+To start this app, just run `python main.py` in the terminal.  You should see the following output:
+```
+ * Running on http://0.0.0.0:8080/ (Press CTRL+C to quit)
+ * Restarting with stat
+```
+The first line tells us the server did indeed start.  And the second line is because it is running in debug mode.
+
+Now let's access our application from a browser.  The URL we can go to for our applcation is the form:
+
+`[workspace]-c9-[username].c9.io`
+
+For example, my workspace name is _mempydemo_ and my username is _douglasstarnes_ so the URL for my application would be
+
+`http://mempydemo-c9-douglasstarnes.c9.io`
+
+Going to the URL for the application should yield the message 'Hello MEMpy'.
+
+![Hello MEMpy](readme_images/hellomempy.png)
+
+To stop the server press _Ctrl-C_ in the terminal.
+
+Obviously, this is not intended for long term hosting.  Also, after you close the browser, the workspace will become idle and the process running the server will be terminated.  For a robust hosting solution, we'll turn to Heroku.
