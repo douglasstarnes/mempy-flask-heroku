@@ -149,9 +149,13 @@ heroku login
 You'll be asked to provide the email address and user name that you used to sign up with.  After that, you'll be able to use the commands to create and manage deployments.
 
 Before that, we need to prepare our application for deployment.  And we'll create some files to give Heroku information as to how to install and configure our application.  The first one is called `runtime.txt` and merely contains the version of Python that the application requires.  To refresh, run `python --version` in the terminal.  The output I got when writing this is:
-`Python 3.4.0`
+```
+Python 3.4.0
+```
 So create a new file in the same directory as `main.py` and call it `runtime.txt`.  The contents is a single line.  In my case for Python 3.4.0 it is:
-`python-3.4.0`
+```
+python-3.4.0
+```
 The next file is called `Procfile` and it tells Heroku the command to run to start the server.  In our case it is simply: `python main.py`.  The contents of `Procfile` should be:
 `web: python main.py`
 The last file tells Heroku the dependencies that the application requires.  These were installed for us automatically when we installed Flask with pip.  And we can retrieve what was installed with the command `pip freeze`.  The output you get should be similar to this: (your version numbers may differ)
