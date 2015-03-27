@@ -63,7 +63,7 @@ There are only a few more things we need to do to get set up and all of them can
 
 First, since all new Python development is going to be done in Python 3, we should use it.  However, the default version of Python installed on Cloud9 workspaces (which are running on top of Ubuntu 14.04) is 2.7.6 (feel free to verify this by running `python --version`.  So we are going to create a _virtual environment_ which is a special instance of Python that thinks it is the default version.  Virtual environments can have their own Python version and implementation as well as their own set of libraries installed.  Fortunately, Cloud9 includes the virtual environment scripts for us.  So to create a virtual environment with Python 3, run the following command:
     mkvirtualenv --python=`which python3` mempydemo
-You'll see some out similar to this:
+You'll see some output similar to this:
     Running virtualenv with interpreter /usr/bin/python3
     Using base prefix '/usr'
     New python executable in mempydemo/bin/python3
