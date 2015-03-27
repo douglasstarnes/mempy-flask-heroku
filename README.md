@@ -138,4 +138,80 @@ Going to the URL for the application should yield the message 'Hello MEMpy'.
 
 To stop the server press _Ctrl-C_ in the terminal.
 
-Obviously, this is not intended for long term hosting.  Also, after you close the browser, the workspace will become idle and the process running the server will be terminated.  For a robust hosting solution, we'll turn to Heroku.
+Also, after you close the browser, the workspace will become idle and the process running the server will be terminated.  Obviously, this is not intended for long term hosting.  For a robust hosting solution, we'll turn to Heroku.
+
+
+####Deploying to Heroku
+Before we can deploy our application to Heroku there is of course some set up involved.  Fortunately, this only has to be done once for the application.  The first step is to log in to Heroku via the tools in the Heroku Toolbelt.  Normally, we would need to install this manually but Cloud9 to the rescue, they have pre-installed it in the workspace for us.  So run the following command in the terminal:
+```
+heroku login
+```
+You'll be asked to provide the email address and user name that you used to sign up with.  After that, you'll be able to use the commands to create and manage deployments.
+
+Before that, we need to prepare our application for deployment.  And we'll create some files to give Heroku information as to how to install and configure our application.  The first one is called `runtime.txt` and merely contains the version of Python that the application requires.  To refresh, run `python --version` in the terminal.  The output I got when writing this is:
+`Python 3.4.0`
+So create a new file in the same directory as `main.py` and call it `runtime.txt`.  The contents is a single line.  In my case for Python 3.4.0 it is:
+`python-3.4.0`
+The next file is called `Procfile` and it tells Heroku the command to run to start the server.  In our case it is simply: `python main.py`.  The contents of `Procfile` should be:
+`web: python main.py`
+The last file tells Heroku the dependencies that the application requires.  These were installed for us automatically when we installed Flask with pip.  And we can retrieve what was installed with the command `pip freeze`.  The output you get should be similar to this: (your version numbers may differ)
+```
+Flask==0.10.1
+Jinja2==2.7.3
+MarkupSafe==0.23
+Werkzeug==0.10.4
+itsdangerous==0.24
+```
+The file Heroku looks for to determine what dependencies to install is called `requirements.txt` and we could just copy the output of `pip freeze` into a new file but there is an easier way.  Linux will let you _redirect_ the output of a command to a file.  So for our needs the command
+```
+pip freeze > requirements.txt
+``` 
+will suffice.
+
+######Git
+Git is a version control system.  As you work on your project you would _commit_ changes at various stages to a Git _repository_ and Git would keep track of those changes and also allow mulitple people to work on the same project without silently overwriting each other's work.  However, we are going to use Git for deploying our application to Heroku's servers.  When you are ready to send commited changes to a server, you do a _push_ to the server.  When you push changes to Heroku's server, it will also trigger the deployment process of copying files, installing dependencies and starting the application.  So let's set up Git.
+
+Again, Cloud9 has made this easy by installing it on the workspace for you.  So the first thing we need to do in make sure the current directory is the root of the workspace (`~/workspace`) and initialize it as a Git repository with the command:
+```
+git init .
+```
+Where the last parameter is the directory to use or '.' (dot) for the current directory.
+
+Then we need to tell Git which files to add to this repository.  We can just add all of them with the command:
+```
+git add .
+```
+Finally, we need to commit the changes to the local git repo with the command:
+```
+git commit -m 'initial commit'
+```
+Now the paramter to the -m (for _message_) flag allows you to provide some text to describe the changes in this commit.  You should get in the habit of doing this.  Commits are not large changes always so you shouldn't need much text.  However, we can use some dummy text like above for now.
+
+######Push to Heroku
+The commands `git add` and `git commit` have come to be known as part of the 'check in dance'.  The last step is to push the committed changes to the remote server, Heroku is this case.  First, we have to be able to tell Git where that server is.  Heroku makes this very easy for you.  When you create a new app on Heroku, it will create a Git _remote_ that will specify Git repository that Heroku has set up for your application.  To create a new app use the `apps:create` command:
+```
+heroku apps:create [app-name]
+```
+You can omit the app-name and heroku will generate one for you or you can provide one.  However, it must be unique across Heroku so you might have to try more than once to find one that is not in use.
+
+The `apps:create` command will set up the remote which you can see with the command `git remote -v` (v for verbose).  And we can see that it created a remote called _heroku_.  That will obviously be the source.  We also need to provide a destination for git on Heroku which will be called _master_.  Heroku also set that up for us.  So the command to push the application to Heroku ends up being:
+```
+git push heroku master
+```
+This will take a little while and product a lot of output.  You'll see that it will detect the Python version in `runtime.txt` and then installed the dependencies from `requirements.txt`.  Then it launch the application and verify the deployment.  After that, assuming everything worked, it will return to the command line without error.  
+
+To see our application on the web, we have a URL reserved for us in the form:
+`[app-name].herokuapp.com`
+I called my app _mymempydemo_ so the URL to my app is `http://mymempydemo.herokuapp.com/`.
+
+![Hello Heroku](readme_images/helloheroku.png)
+
+If that seemed like a lot of steps, it was but most them only have to be done once for the application.  In the future, when we make changes we'll only need to add any new files and then commit the changes and push them.  So the check-in dance ends up being:
+```
+git add .
+git commit -m 'message'
+git push heroku master
+```
+And you don't have to push after every commit.  The push will push all of the commits since the last push
+
+The rest of this tutorial will focus on the application itself.  We'll add Bootstrap to make it look nice, create templates and forms, and hook it up to MongoDB.
