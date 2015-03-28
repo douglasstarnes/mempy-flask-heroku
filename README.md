@@ -47,7 +47,7 @@ A new entry in the left of the window will come up with your workspace name and 
 
 ![Workspace pending](readme_images/c9working.png)
 
-When Cloud9 is finished you can click the green _START EDITING_ button in the right side of the window.   
+When Cloud9 is finished you can click the green _START EDITING_ button in the right side of the window.
 
 ![Begin editing](readme_images/c9beginediting.png)
 
@@ -108,7 +108,7 @@ app.debug = True
 @app.route('/')
 def index():
     return 'Hello MEMpy'
-    
+
 if __name__ == '__main__':
     port = int(os.getenv('PORT', 8080))
     host = os.getenv('IP', '0.0.0.0')
@@ -169,7 +169,7 @@ itsdangerous==0.24
 The file Heroku looks for to determine what dependencies to install is called `requirements.txt` and we could just copy the output of `pip freeze` into a new file but there is an easier way.  Linux will let you _redirect_ the output of a command to a file.  So for our needs the command
 ```
 pip freeze > requirements.txt
-``` 
+```
 will suffice.
 
 ######Git
@@ -219,3 +219,77 @@ git push heroku master
 And you don't have to push after every commit.  The push will push all of the commits since the last push
 
 The rest of this tutorial will focus on the application itself.  We'll add Bootstrap to make it look nice, create templates and forms, and hook it up to MongoDB.
+
+####Connecting to MongoDB
+
+######MongoLab
+In the beginning of this tutorial, you created an account with a service called MongoLab.  Now we will set up a MongoDB database in MongoLab.  Log into your MongoLab account at [mongolab.com](http://mongolab.com).  The section _MongoDB Deployments_ will be empty.  Click on the _Create new_ button.
+![Create MongoDB](readme_images/createmongodb.png)
+On the next page, under _Create new subscription_ select the following options:
+![Create new subscription](readme_images/newsubscription.png)
+
+1. For the _Cloud provider_ select any of the providers available.  I selected Amazon Web Services.
+2. Under _Plan_ be sure to select _Single-node_.  This is the only option with a free quota.
+3. Select the _Sandbox_ plan, which is free.
+
+Give your database a name and click the _Create_ button.
+
+You'll then see the deployments page again, with the newly created database.
+
+![New DB](readme_images/mempydemomongo.png)
+
+Now we need to create a new user for the database to access it remotely.  Click on the new database.  You'll see the following page.  There will be a message that you should create a new user.  Click the link that is highlighted to create a new user.
+
+![Create new user](readme/createnewuser.png)
+
+A short dialog will appear asking for a username and password for the new user.
+
+Back in the database page, you'll see a URI of the form:
+```
+mongodb://<dbuser>:<dbpassword>@<host>:<port>/<db>
+```
+We will use this URI to connect to MongoDB from Python via a package called MongoEngine.  But first, we need to have a way for Python to know about the URI.  We could store it in a Python constants file but then that would make it visible to the world as we are using the free workspaces on Cloud9 and all of the files are public read-only.  However, we can use an environment variable to store the URI.  We can set up a new environment variable on Heroku using the web interface at [heroku.com](http://heroku.com).
+
+Log in to Heroku and you'll be taken to the dashboard where you'll see the app you created from before.  
+
+![Heroku dashboard](readme_images/herokudb.png)
+
+Click on it and then on _Settings_ tab.
+
+In Settings you'll see a section _Config Variables_.  Click on the link to show the config variables and then on the _Edit_ button on the right.  Create a new variable with the _KEY_ set to `MONGOLAB_URI` and the _VALUE_ set to the URI from MongoLab.  You'll need to substitute the username and password with those you created for the new database.  Then click the _Save_ button.
+
+That's got MongoDB set up on MongoLab and Heroku.  But this is our production database that is live on the web.  We want to be able to have a test database that we can experiement with.  Fortunately, Cloud9 has thought of this for us and has preinstalled MongoDB on our instance.  Let's get that set up next.
+
+######MongoDB on Cloud9
+The best way to set up MongoDB on Cloud9 is to refer to this page in the Cloud9 documentation: [https://docs.c9.io/v1.0/docs/setting-up-mongodb](https://docs.c9.io/v1.0/docs/setting-up-mongodb)
+
+In the root of your workspace (`~/workspace`), create a new directory called 'data' with the following command in the terminal:
+```
+mkdir data
+```
+
+Then run the following command to make a script that will start MongoDB:
+```
+echo 'mongod --bind_ip=$IP --dbpath=data --nojournal --rest "$@"' > mongod
+```
+
+Finally make the script executable:
+```
+chmod a+x mongod
+```
+
+Now run the script to start MongoDB:
+```
+./mongod
+```
+
+######MongoEngine
+Now we need to install mongoengine, the Python package that will connect to MongoDB.  We will use pip to do this again:
+```
+pip install mongoengine
+```
+
+We also need to update the `requirements.txt` file so that when we push to Heroku, mongoengine will be installed on the server:
+```
+pip freeze > requirements.txt
+```
