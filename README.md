@@ -240,7 +240,7 @@ You'll then see the deployments page again, with the newly created database.
 
 Now we need to create a new user for the database to access it remotely.  Click on the new database.  You'll see the following page.  There will be a message that you should create a new user.  Click the link that is highlighted to create a new user.
 
-![Create new user](readme/createnewuser.png)
+![Create new user](readme_images/createnewuser.png)
 
 A short dialog will appear asking for a username and password for the new user.
 
