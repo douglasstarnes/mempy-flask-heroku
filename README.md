@@ -531,7 +531,7 @@ connect('mempydemo')
 Next, inside of the `index()` function where we handle the POST request, replace the body with the following code:
 ```python
 task = request.form['task']
-duedays = int(request.form(['duedays'])
+duedays = int(request.form['duedays'])
 priority = int(request.form['priority'])
 complete = False
 
@@ -682,12 +682,77 @@ Also, you can go to [mongolab.com](http://mongolab.com) and browse the database:
 >
 > `mongodb://<dbuser>:<dbpassword>@<host>:<port>/<db>`
 
-The next part will show how to make things look nice with Bootstrap and then we'll look at updating data so we can mark items as complete.  Check back soon!
+####Bootstrap
+I openly admit that I am not a designer.  However, end users are not always understanding of my lack of design skills.  So when I need to create a user interface, I turn to Twitter Bootstrap.  Bootstrap is a library of CSS components that makes it easy (or at least easier) for non-designers like myself to quickly create a pleasing (or plausible) user interface.  The first step is to add the CSS file for Bootstrap to our template.  I like to get commonly used resources such as Bootstrap, jQuery, underscore and AngularJS from [cdnjs.com](http://cdnjs.com).  So if we go to their site, and search for __bootstrap__, we'll see the first result is for _twitter-bootstrap_.
+
+![Twitter Bootstrap on cdnjs](readme_images/cdnjstbs.png)
+
+Click on that link and then find the link for _bootstrap.min.css_.  This is the minfied CSS that will take less time to load.  Click the _Copy_ button to copy the link to the clipboard.
+
+![Select bootstrap.min.css](readme_images/bsmincss.png)
+
+Now switch over to `index.html`.  Add a `<head>` tag and a `<link>` tag inside of that.
+
+> Inside an HTML file with the Cloud9 editor, you can type 'head' and then press the TAB key to have it generate the opening and closing tag.  You can do the same with 'link' and it will also fill in some of the most used attributes as well.
+
+In the 'href' attribute paste the link from cdnjs.com for Bootstrap.  We will also need some custom styles to highlight high priority and overdue tasks.  So add another `<link>` tag.  This time the 'href' attribute will be the path to a custom CSS file.  In Flask, static assets like styles and scripts are stored in a directory in the root of the application called `static` so go ahead and create that now and then a file inside called `styles.css`.  We'll leave it empty for now.  To get the path for a static file we'll use a special function called `url_for` which is provided by Flask.  This function specifies 'static' as the directory to find the 'filename' in.  The `<head>` tag should now look like this:
+
+```html
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.4/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" type="text/css" />
+</head>
+```
+
+Now refresh the site.  It already looks better!
+
+![Bootstrap 1](readme_images/bootstrap1.png)
+
+Next we'll use the grid layout that Bootstrap gives us to make the form look better.  All grids are placed in a `<div>` tag with a class of `container`.  For this simple page, I'll wrap everything in the `<body>`.
+
+```html
+<body>
+    <div class="container">
+        ...
+    </div>
+</body>
+```
+
+> To quickly create the `<div>` tag with a `container` class, simple type `div.container` and then press the TAB key in the Cloud9 editor.
+
+Grids have rows and columns.  With Bootstrap, each row is a `<div>` tag with a class of `row`.  Place each label and text box in the form in a `<div>`.  Be sure to remove the `<br>` tag.
+
+```html
+<div class="container">
+    ...
+    <div class="row">
+        Task: <input type="text" name="task">
+    </div>
+    ...
+</div>
+```
+
+The label and text box should each be in a column.  The class for a column that we are using is 'col-md-2'.  The 'col' is for 'column', the 'md' is for 'medium', and the '2' is for width of 2 units.  All rows in Bootstrap have a width of 12 'units'.  The length of a unit depends on the width of the page because Bootstrap is responsive.  The 'md' has some effect on this as well.  We aren't going to get into responsive design here.  The template should start looking like this:
+
+```html
+<div class="container">
+    ...
+    <div class="row">
+        <div class="col-md-2">Task:</div>
+        <div class="col-md-2"><input type="text" name="task"></div>
+    </div>
+    ...
+    <div class="row">
+        <div class="col-md-4"><input type="submit" value="Create Task"></div>
+    </div>
+</div>
+```
+
+Save the template and refresh the site again.  That is much better!
+
+![Form styled](readme_images/formstyle.png)
+
+Next we need to work on the list of tasks.  But there are some loose ends we need to tie up in the data model first.
 
 
-
-
-
-
-
-
+####Refining our model class
