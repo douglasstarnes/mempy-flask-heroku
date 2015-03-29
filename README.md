@@ -283,13 +283,144 @@ Now run the script to start MongoDB:
 ./mongod
 ```
 
+You'll have to open a new terminal tab to continue because the server will consume the current one.  To do this, click on the (+) tab at then end of the tab bar for the terminal and select _New Terminal_:
+
+![New terminal](readme_images/newterminal.png)
+
+Also, the new terminal will not have the virtual environment activated so you'll need to use the `workon` command to activate the virtual environment you created before.
+
 ######MongoEngine
 Now we need to install mongoengine, the Python package that will connect to MongoDB.  We will use pip to do this again:
 ```
-pip install mongoengine
+sudo pip install mongoengine
 ```
+
+> Note that this time we have to use the `sudo` command to run with elevated privileges.
 
 We also need to update the `requirements.txt` file so that when we push to Heroku, mongoengine will be installed on the server:
 ```
 pip freeze > requirements.txt
 ```
+
+Now we can test MongoEngine.  I'll do this in a new file that I'll call `test_mongo.py`.  This isn't standard practice but it will be OK for experimentation.
+
+In my test file I will first connect to the database.  Mongoengine provides a function `connect()` that we can import from the `mongoengine` package.  So at the top of the file:
+```
+from mongoengine import connect
+```
+
+Then in the entry point call the `connect()` function and pass it the name of the database to use.  This will connect to the test instance of MongoDB we just set up.  Before we push to Heroku, we will set it up to connect to MongoLab.  We can use any database name for testing and MongoDB will create it for us:
+
+```python
+if __name__ == '__main__':
+    connect('mempydemo')
+```
+
+Now we need to tell MongoDB what data we want to store. We will keep it very simple and store shapes with two properties: a name (which will be a string), and a number of sides (an integer).  We will do this in a Python class.  However, MongoEngine gives us a class that tells MongoEngine how to load, save and do other things with data.  This class is called `Document`.  We'd like to use that so our class will inherit from `Document`:
+
+```python
+class Shape(Document):
+    name = StringField()
+    sides = IntField()
+```
+
+`Document`, `StringField`, and `IntField` are also in the `mongoengine` package so we need to import them as well:
+
+```
+from mongoengine import connect, Document, StringField, IntField
+```
+
+Back in the entry point, we'll create a couple of `Shape` objects.  Then we'll call the `save()` method inherited from `Document` to persist the changes to MongoDB:
+```python
+square = Shape('square', 4)
+octagon = Shape('octagon', 8)
+circle = Shape('circle', 1)
+point = Shape('point', 0)
+
+square.save()
+octagon.save()
+circle.save()
+point.save()
+```
+
+Here is the entire code for the test file:
+```python
+from mongoengine import connect, Document, StringField, IntField
+
+class Shape(Document):
+    name = StringField()
+    sides = IntField()
+    
+if __name__ == '__main__':
+    connect('mempydemo')
+    
+    square = Shape('square', 4)
+    octagon = Shape('octagon', 8)
+    circle = Shape('circle', 1)
+    point = Shape('point', 0)
+
+    square.save()
+    octagon.save()
+    circle.save()
+    point.save()
+```
+
+> You might notice the red 'x's in the gutter in the Cloud9 editor.  This is Cloud9 telling you that it can't find the method `save()` on the `Shape` objects.
+> ![Editor 'error'](readme_images/xsc9editor.png)
+> 
+> However, this is not an error in this case.  The x's can be ignored.  The dynamic nature of Python makes static analysis difficult.  
+
+To run this test file, execute the command:
+```
+python test_mongo.py
+```
+
+If if looked like nothing happened, that is probably a good thing.  To see the data in the database we need to connect to it with the `mongo` command line app.  So in the terminal run the command:
+```
+mongo
+```
+
+
+You'll see some output similar to this: (ignore any warnings about the REST interface)
+```
+MongoDB shell version: 2.6.7
+connecting to: test
+Server has startup warnings: 
+2015-03-28T23:25:19.828+0000 ** WARNING: --rest is specified without --httpinterface,
+2015-03-28T23:25:19.828+0000 **          enabling http interface
+```
+
+To see if out database was create run the `show dbs` command in the `mongo` shell.  The output will look something like this:
+```
+admin      (empty)
+local      0.078GB
+mempydemo  0.078GB
+```
+
+And we can see that the database was created.  Switch to it with the `use mempydemo` command.  MongoDB store data as _documents_ inside of _collections_.  The `Shape` class we created represents a document.  So if we run the `show collections` command in the `mongo` shell we should see it:
+```
+shape
+system.indexes
+```
+
+To see the documents (data) that are inside of a collection, we can call the `find()` method on the collection.  In the `mongo` shell, the variable `db` refers to current database.  The collections are just properties on that `db`.  So to get all of the documents in the `shape` collection we would run:
+```
+db.shape.find()
+```
+
+And see something like this:
+```
+{ "_id" : ObjectId("55173eecbe0cfc0a02a6b18e"), "name" : "square", "sides" : 4 }
+{ "_id" : ObjectId("55173eedbe0cfc0a02a6b18f"), "name" : "octagon", "sides" : 8 }
+{ "_id" : ObjectId("55173eedbe0cfc0a02a6b190"), "name" : "circle", "sides" : 1 }
+{ "_id" : ObjectId("55173eedbe0cfc0a02a6b191"), "name" : "point", "sides" : 0 }
+```
+
+Your values for '_id' will definitely vary, but other than that it should be the same.
+
+
+
+
+
+
+
