@@ -419,9 +419,89 @@ And see something like this:
 
 Your values for '_id' will definitely vary, but other than that it should be the same.
 
+Now that we have a database server working, we can build out the rest of the app.  If you want to clean up the database and start fresh run:
+```
+db.dropDatabase()
+```
+This will delete the database but it will be recreated the next time we connect to it and save a document.  Exit the `mongo` shell with _Ctrl D_.  Then delete the test file.
 
+####Flask and forms
+We're going to create the present day 'Hello world' app which is a todo list.  So first we'll create a form that will let a user create a new todo item.  We'll use an HTML template for this and have Flask display that template on the index page.  Templates in Flask are by default stored in a directory in the root of the application called `templates` so let's go ahead and create one:
+```
+mkdir templates
+```
 
+Next, inside of the `templates` folder, create a new template called `index.html` and add the following markup to it:
+```html
+<html>
+    <body>
+        <h1>Index page</h1>
+    </body>
+</html>
+```
 
+Back in `main.py` import the `render_template` function from the `flask` package.
+```
+from flask import Flask, render_template
+```
+This function will take the path of a template relative to the `templates` directory.  It will also optionally take a collection of keyword arguments to populate the template.  Then it will return a string representing the final HTML document.  For starter let's just render the document.  Change the body of the `index()` function:
+```python
+def index()
+    return render_template('index.html')
+```
+
+Now we can run the application and look at it in the browser.  You should see something like this:
+![Template index](readme_images/templateindex.png)
+
+Let's put the form in the `index.html` template:
+```html
+<h3>Create a new task</h3>
+<form action="" method="post">
+    Task: <input type="text" name="task"><br/>
+    Days until due: <input type="text" name="duedays"><br/>
+    Priority: <input type="text" name="priority"><br/>
+    <input type="submit" value="Create Task">
+</form>
+```
+The result should be something like the following:
+![Task form](readme_images/taskform.png)
+
+We'll make it look better after we get the application working.
+
+If you try to create a new task now, you'll get an error:
+![Task error](readme_images/taskerror.png)
+
+This is because we specified the POST method in the form.  By default, request handler functions (such as `index()`) can only handle GET requests.  The `route` decorator accepts a list of methods that the handler function can handle:
+```python
+@app.route('/', methods['GET', 'POST'])
+def index():
+    return render_template('index.html')
+```
+
+Make this change, save `main.py` and the server will restart.  Now you can press the button and get no errors.  But nothing appears to have happened.  That's because we are not watching for a POST request in the handler function.
+
+To detect POST requests, we'll need to import a member from `flask` called `request`:
+```
+from flask import Flask, render_template, request
+```
+
+This member will always represent the current HTTP request.  It has a `method` property that will hold the method of the current request such as 'GET' or 'POST'.  If the method is a GET request, we'll return the template.  If it is a POST request, we'll use the `form` property of `request` to access the form values.  This `form` property is a dictionary like object that we can use to access the form values by name.  So the `index()` function now looks like this:
+```python
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    if request.method == 'GET':
+        return render_template('index.html')
+    elif request.method == 'POST':
+        return 'task: {0}, days til due: {1}, priority: {2}'.format(
+            request.form['task'],
+            request.form['duedays'],
+            request.form['priority'])
+```
+Save `main.py` and the server will restart.  Then the form should work as in the following screengrabs:
+
+![Task before](readme_images/taskbefore.png)
+---
+![Task after](readme_images/taskafter.png)
 
 
 
