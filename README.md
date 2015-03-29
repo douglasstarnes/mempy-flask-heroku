@@ -3,47 +3,48 @@ At the MEMpy meeting in March, we saw how to create and deploy a simple Flask ap
 
 ####What you'll need
 Before you begin you'll need to sign up for a few online services:
-* Github - If you haven't created a Cloud9 account yet, you can easily do so with Github
-* Cloud9 - Use your Github account to log in
-* Heroku - This is the cloud hosting service
-* MongoLab - This is the database
+
+ * Github - If you haven't created a Cloud9 account yet, you can easily do so with Github
+ * Cloud9 - Use your Github account to log in
+ * Heroku - This is the cloud hosting service
+ * MongoLab - This is the database
 
 ######Github
-The home page for Github is [github.com](http://github.com).  We won't be using Github for in this tutorial for anything other than creating a Cloud9 account.  If you already have a Github account, skip to the next section.  Otherwise, go to the Github home page and create a new account.  You'll have to verify your email address by clicking on a link in an email they will send to you.  After that, you're ready to move on to Cloud9.
+The home page for Github is [github.com](http://github.com).  We won't be using Github for in this tutorial for anything other than creating a Cloud9 account.  If you already have a Github account, you can skip to the next section.  Otherwise, go to the Github home page and create a new account.  You'll have to verify your email address by clicking on a link in an email they will send to you.  After that, you're ready to move on to Cloud9.
 
 ######Cloud9 IDE
-This is the browser-based development environment we will be using.  It's completely free to use except there is one note of caution I like to reiterate.  **In the free Cloud9 workspaces, all code is public read-only.**  This means that you should not store sensitive data like OAuth tokens or API keys in the code (and you shouldn't do this anyway).  We'll see a better way of doing this when we get to MongoLab.
+This is the browser-based development environment we will be using.  It's completely free to use except there is one note of caution I like to reiterate.  **In the free Cloud9 workspaces, all code is public read-only.**  This means that you should not hardcode sensitive data like OAuth tokens or API keys (and you shouldn't do this anyway).  We'll see a better way of doing this when we get to MongoLab.
 
-The Cloud9 home page is [c9.io](http://c9.io).  You can use your Github account (see the previous section) to create a Cloud9 account.  Just click on the icon that looks like the silhouette of a cat next to the 'SIGN IN' button:
+The Cloud9 home page is [c9.io](http://c9.io).  You can use your Github account (see the previous section) to create a Cloud9 account.  Just click on the icon that looks like the silhouette of a cat next to the _SIGN IN_ button:
 
 ![Sign in to Cloud9 with Github](readme_images/c9signin.png)
 
-If you already have a Cloud9 account associated with Github you'll be taken to the dashboard.  Otherwise, a screen will ask you to authorize Cloud9 to use your Github account.  Once you agree, you'll be taken to the dashboard.
+If you already have a Cloud9 account associated with Github you'll be taken to the dashboard.  Otherwise, a page will appear asking you to authorize Cloud9 to use your Github account.  Once you agree, you'll be taken to the dashboard.
 
 ######Heroku
 Heroku is a cloud web application hosting provider.  We will use Heroku to serve our application.  Heroku is free just like Github and Cloud9 (or at least it has a free plan which will be more than enough for our simple application.) but you can't use Github to log in.  So you'll need to go to the Heroku homepage at [heroku.com](http://heroku.com) and create an account.  The process is similar to Github and you'll need to verify your email by clicking on a link they will send you in an email.  
 
-One note about Heroku, it also has paid plans.  By default, you get 5 applications and a limited number of add on services (such as databases) for free.  However, if you verify your account with a credit card, they will give you 100 application and more add ons.  This will make the next step, adding MongoDB support, very easy.  However, I understand that not everyone will want to do this so I have included the instructions for using MongoLab with Heroku without a verified account.
+One note about Heroku, it also has paid plans.  By default, you get 5 applications and a limited number of add on services (such as databases) for free.  However, if you verify your account with a credit card, they will give you 100 application and more add ons.  This will make adding MongoDB support much easier.  However, I understand that not everyone will want to do this so I have included the instructions for using MongoLab with Heroku without a verified account.
 
 ######MongoLab
-MongoLab is the host for the database that we will use.  This database is called MongoDB.  If you haven't worked with MongoDB or it's relatives (collectively referred to as NoSQL) it's quite different from other databases you might have used in the past.  However, it's super simple to use, is pre-installed on Cloud9 for testing purposes, has an excellent Python library and is free!  So just like Heroku, you can't use Github to login.  You'll need to go to the MongoLab home page at [mongolab.com](http://mongolab.com) and create an account.  After that, head back to Cloud 9 and we'll start coding!
+MongoLab is the host for the database that we will use.  This database is called MongoDB.  If you haven't worked with MongoDB or it's relatives (collectively referred to as NoSQL) it's quite different from other databases you might have used in the past.  However, it's super simple to use, is pre-installed on Cloud9 for testing purposes, has an excellent Python library and is free!  So just like Heroku, you can't use Github to login.  You'll need to go to the MongoLab home page at [mongolab.com](http://mongolab.com) and create an account.  After that, head back to Cloud9 and we'll start coding!
 
 ####Setting up Cloud9
-There is not a lot to do here because most everything is preinstalled but there are a few things we need to do.  First we have to create a new workspace.  When you log in to Cloud9, you'll be taken to the dashboard which has a list of your workspaces on the left.  By default, Cloud9 creates a demo project workspace for you, but we are going to create one from scratch.  So click the green 'CREATE NEW WORKSPACE' button in the upper left and then on the 'Create a New Workspace' link in the pop up menu:
+There is not a lot to do here because most everything is preinstalled but there are a few things we need to do.  First we have to create a new workspace.  When you log in to Cloud9, you'll be taken to the dashboard which has a list of your workspaces on the left.  By default, Cloud9 creates a demo project workspace for you, but we are going to create one from scratch.  So click the green _CREATE NEW WORKSPACE_ button in the upper left and then on the _Create a New Workspace_ link in the pop up menu:
 
 ![Create a new Cloud9 workspace](readme_images/createc9wkspc.png)
 
-You'll be presented with the 'Create a New Workspace' dialog:
+You'll be presented with the _Create a New Workspace_ dialog:
 
 ![Create a New Workspace](readme_images/createwkspcdialog.png)
 
 1. Give your workspace a name.  This name does not have to be unique across Cloud9, only to your account so you can use _mempydemo_ like shown above.
-2. Select _Open and Discoverable_ for _Workspace Privacy_.  This is the option to get free workspaces.
+2. Select _Open and Discoverable_ for _Workspace Privacy_.  This is the option for free workspaces.
 3. For _Hosting_ select _Hosted_.  Again, this is for the free workspaces.
 4. Select _Custom_ for the workspace type.  This will give us a blank workspace without any opinions as to the framework or language we will be using.
 5. Click the green _CREATE_ button.
 
-A new entry in the left of the window will come up with your workspace name and a gear.  This mean Cloud9 is creating the workspace.  It should only take a few seconds.  Cloud9 is very fast!
+A new entry in the left pane will come up with your workspace name and a spinning gear.  This means Cloud9 is creating the workspace.  It should only take a few seconds.  Cloud9 is very fast!
 
 ![Workspace pending](readme_images/c9working.png)
 
@@ -56,15 +57,17 @@ Below is a picture of the default layout for the Cloud9 IDE:
 ![C9 workspace](readme_images/c9workspace.png)
 
 1. The project manager that shows a tree view of the files in this workspace.
-2. An editor similar to Sublime Text with optional vim binding.
-3. A Linux terminal with sudo shell access.
+2. An editor similar to Sublime Text with optional vim bindings.
+3. A Linux terminal with sudo access.
 
 There are only a few more things we need to do to get set up and all of them can be done from the terminal.
 
-First, since all new Python development is going to be done in Python 3, we should use it.  However, the default version of Python installed on Cloud9 workspaces (which are running on top of Ubuntu 14.04) is 2.7.6 (feel free to verify this by running `python --version`.  So we are going to create a _virtual environment_ which is a special instance of Python that thinks it is the default version.  Virtual environments can have their own Python version and implementation as well as their own set of libraries installed.  Fortunately, Cloud9 includes the virtual environment scripts for us.  So to create a virtual environment with Python 3, run the following command in the terminal:
+First, since the maintainers of Python are investing all new development in Python 3, we should use that.  However, the default version of Python installed on Cloud9 workspaces (which are running on top of Ubuntu 14.04) is 2.7.6 (feel free to verify this by running `python --version` in the terminal).  So we are going to create a _virtual environment_ which is a special instance of Python that thinks it is the default version.  Virtual environments can have their own Python version and implementation as well as their own set of packages (libraries) installed.  Fortunately, Cloud9 includes the virtual environment scripts for us.  So to create a virtual environment with Python 3, run the following command in the terminal:
 ```
 mkvirtualenv --python=`which python3` mempydemo
 ```
+> Don't like to type?  Just type the first few letters of a long command (ie. 'mkv') and press TAB.  The terminal will complete it for you!
+
 You'll see some output similar to this:
 ```
 Running virtualenv with interpreter /usr/bin/python3
@@ -73,7 +76,7 @@ New python executable in mempydemo/bin/python3
 Also creating executable in mempydemo/bin/python
 Installing setuptools, pip...done.
 ```
-The last parameter is the name of the virtual environment.  You can use any name you want but since this is specific only to this workspace, you can use _mempydemo_ to make it easier to follow along.  Notice that the prompt in the terminal is now prefixed with the name of the virtual environment in parentheses.  This means you are inside a virtual environment.  To verify this run the command `python --version` again and you should see a variant of Python 3, 3.4.0 as of this writing.
+The last parameter is the name of the virtual environment.  You can use any name you want but since this is specific only to the workspace, you can use _mempydemo_ to make it easier to follow along.  Notice that the prompt in the terminal is now prefixed with the name of the virtual environment in parentheses.  This means you are inside a virtual environment.  To verify this run the command `python --version` again and you should see a variant of Python 3, 3.4.0 as of this writing.
 
 To leave a virtual environment, run the command `deactivate`.  The prefix willbe removed from the prompt and Python 2.7.6 will be the default version again.  Again, check this with `python --version`.  To enter the virtual environment, run `workon mempydemo` (or whatever you named your virtual environment) and you'll see the environment is now active again.
 
@@ -92,7 +95,7 @@ We need to create a new Python file to hold our code.  This can be done in many 
 
 ![The plus tab](readme_images/plustab.png)
 
-My preferred way is to create create new files in the terminal.  To do this make sure you are in the _workspace_ directory in your home directory (`cd ~/workspace` to move there) and then run `touch main.py` where _main.py_ is the name of the file to create.  Then double click on that file in the project manager.  If you don't see it you may have to refresh the file tree which you can do by clicking on the gear in the project manager and selecting _Refresh File Tree_.
+My preferred way is to create new files in the terminal.  To do this make sure you are in the _workspace_ directory in your home directory (`cd ~/workspace` to move there) and then run `touch main.py` where _main.py_ is the name of the file to create.  Then double click on that file in the project manager.  If you don't see it you may have to refresh the file tree which you can do by clicking on the gear in the project manager and selecting _Refresh File Tree_.
 
 ![Refresh File Tree](readme_images/refreshfiletree.png)
 
@@ -122,9 +125,9 @@ To start this app, just run `python main.py` in the terminal.  You should see th
  * Running on http://0.0.0.0:8080/ (Press CTRL+C to quit)
  * Restarting with stat
 ```
-The first line tells us the server did indeed start.  And the second line is because it is running in debug mode.
+The first line tells us the server did indeed start.  And the second line shows is running in debug mode.
 
-Now let's access our application from a browser.  The URL we can go to for our applcation is the form:
+Now let's access our application from a browser.  The URL we can use for our applcation is of the form:
 
 `[workspace]-c9-[username].c9.io`
 
@@ -132,23 +135,23 @@ For example, my workspace name is _mempydemo_ and my username is _douglasstarnes
 
 `http://mempydemo-c9-douglasstarnes.c9.io`
 
-Going to the URL for the application should yield the message 'Hello MEMpy'.
+Navigating to the URL for the application should yield the message 'Hello MEMpy'.
 
 ![Hello MEMpy](readme_images/hellomempy.png)
 
-To stop the server press _Ctrl-C_ in the terminal.
+To stop the server press _Ctrl-c_ in the terminal.
 
 Also, after you close the browser, the workspace will become idle and the process running the server will be terminated.  Obviously, this is not intended for long term hosting.  For a robust hosting solution, we'll turn to Heroku.
 
 
 ####Deploying to Heroku
-Before we can deploy our application to Heroku there is of course some set up involved.  Fortunately, this only has to be done once for the application.  The first step is to log in to Heroku via the tools in the Heroku Toolbelt.  Normally, we would need to install this manually but Cloud9 to the rescue, they have pre-installed it in the workspace for us.  So run the following command in the terminal:
+Before we can deploy our application to Heroku there is some set up involved.  Fortunately, this only has to be done once for the application.  The first step is to log in to Heroku via the scripts in the Heroku Toolbelt.  Normally, we would need to install this manually but Cloud9 has pre-installed it in the workspace for us.  So run the following command in the terminal:
 ```
 heroku login
 ```
-You'll be asked to provide the email address and user name that you used to sign up with.  After that, you'll be able to use the commands to create and manage deployments.
+You'll be asked to provide the email address and password that you used to sign up with.  After that, you'll be able to use the `heroku` command to create and manage deployments.
 
-Before that, we need to prepare our application for deployment.  And we'll create some files to give Heroku information as to how to install and configure our application.  The first one is called `runtime.txt` and merely contains the version of Python that the application requires.  To refresh, run `python --version` in the terminal.  The output I got when writing this is:
+Before that, we need to prepare our application for deployment.  We'll create some files to give Heroku information as to how to install and configure our application.  The first file is called `runtime.txt` and merely contains the version of Python that the application requires.  To reiterate, run `python --version` in the terminal to see the current version of Python.  The output I got when writing this is:
 ```
 Python 3.4.0
 ```
@@ -157,8 +160,10 @@ So create a new file in the same directory as `main.py` and call it `runtime.txt
 python-3.4.0
 ```
 The next file is called `Procfile` and it tells Heroku the command to run to start the server.  In our case it is simply: `python main.py`.  The contents of `Procfile` should be:
-`web: python main.py`
-The last file tells Heroku the dependencies that the application requires.  These were installed for us automatically when we installed Flask with pip.  And we can retrieve what was installed with the command `pip freeze`.  The output you get should be similar to this: (your version numbers may differ)
+```
+web: python main.py
+```
+The last file tells Heroku what dependencies the application requires.  These were installed for us automatically when we installed Flask with pip.  And we can retrieve what pip installed with the command `pip freeze`.  The output you get should be similar to this: (your version numbers may differ)
 ```
 Flask==0.10.1
 Jinja2==2.7.3
@@ -166,43 +171,43 @@ MarkupSafe==0.23
 Werkzeug==0.10.4
 itsdangerous==0.24
 ```
-The file Heroku looks for to determine what dependencies to install is called `requirements.txt` and we could just copy the output of `pip freeze` into a new file but there is an easier way.  Linux will let you _redirect_ the output of a command to a file.  So for our needs the command
+The file Heroku looks for to determine what dependencies to install is called `requirements.txt`.  We could just copy the output of `pip freeze` into a new file but there is an easier way.  Linux will let you _redirect_ the output of a command to a file.  So for our needs the command
 ```
 pip freeze > requirements.txt
 ```
 will suffice.
 
 ######Git
-Git is a version control system.  As you work on your project you would _commit_ changes at various stages to a Git _repository_ and Git would keep track of those changes and also allow mulitple people to work on the same project without silently overwriting each other's work.  However, we are going to use Git for deploying our application to Heroku's servers.  When you are ready to send commited changes to a server, you do a _push_ to the server.  When you push changes to Heroku's server, it will also trigger the deployment process of copying files, installing dependencies and starting the application.  So let's set up Git.
+Git is a version control system.  As you work on your project you will _commit_ changes at various stages to a Git _repository_ on your local machine and Git will keep track of those changes and also allow mulitple people to work on the same project without silently overwriting each other's work.  However, we are going to use Git for deploying our application to Heroku's servers.  When you are ready to send committed changes to a remote master repository, you do a _push_ to the server.  When you push changes to Heroku's server, it will also trigger the deployment process of copying files, installing dependencies and starting the application.  So let's set up Git.
 
-Again, Cloud9 has made this easy by installing it on the workspace for you.  So the first thing we need to do in make sure the current directory is the root of the workspace (`~/workspace`) and initialize it as a Git repository with the command:
+Again, Cloud9 has made this easy by installing Git in the workspace for you.  So the first thing we need to do is make sure the current directory is the root of the workspace (`~/workspace`) and initialize it as a Git repository with the command:
 ```
 git init .
 ```
-Where the last parameter is the directory to use or '.' (dot) for the current directory.
+The last parameter is the directory to use or '.' (dot) for the current directory.
 
 Then we need to tell Git which files to add to this repository.  We can just add all of them with the command:
 ```
 git add .
 ```
-Finally, we need to commit the changes to the local git repo with the command:
+Finally, we need to commit the changes to the local Git repo with the command:
 ```
 git commit -m 'initial commit'
 ```
-Now the paramter to the -m (for _message_) flag allows you to provide some text to describe the changes in this commit.  You should get in the habit of doing this.  Commits are not large changes always so you shouldn't need much text.  However, we can use some dummy text like above for now.
+The parameter to the -m (for _message_) flag allows you to provide some text to describe the changes in this commit.  You should get in the habit of doing this.  Commits are not always large changes so you shouldn't need much text.  However, we can use some dummy text like above for now.
 
 ######Push to Heroku
-The commands `git add` and `git commit` have come to be known as part of the 'check in dance'.  The last step is to push the committed changes to the remote server, Heroku is this case.  First, we have to be able to tell Git where that server is.  Heroku makes this very easy for you.  When you create a new app on Heroku, it will create a Git _remote_ that will specify Git repository that Heroku has set up for your application.  To create a new app use the `apps:create` command:
+The commands `git add` and `git commit` have come to be known as part of the 'check in dance'.  The last step is to push the committed changes to the remote server, Heroku in this case.  First, we have to tell Git where that server is.  Heroku makes this very easy for you.  When you create a new app on Heroku, it will create a Git _remote_ that will specify the address of a remote repository that Heroku has set up for your application.  To create a new app use the `apps:create` command:
 ```
 heroku apps:create [app-name]
 ```
-You can omit the app-name and heroku will generate one for you or you can provide one.  However, it must be unique across Heroku so you might have to try more than once to find one that is not in use.
+You can omit the app-name and heroku will generate one for you or you can provide one.  However, if you provide one it must be unique across Heroku so you might have to try a few times to find one that is not in use.
 
-The `apps:create` command will set up the remote which you can see with the command `git remote -v` (v for verbose).  And we can see that it created a remote called _heroku_.  That will obviously be the source.  We also need to provide a destination for git on Heroku which will be called _master_.  Heroku also set that up for us.  So the command to push the application to Heroku ends up being:
+The `apps:create` command will set up the remote which you can view with the command `git remote -v` (v for verbose).  You will see that it created a remote called _heroku_.  That will obviously be the source.  We also need to provide a destination for Git on Heroku which will be called _master_.  Heroku also set that up for us.  So the command to push the application to Heroku ends up being:
 ```
 git push heroku master
 ```
-This will take a little while and product a lot of output.  You'll see that it will detect the Python version in `runtime.txt` and then installed the dependencies from `requirements.txt`.  Then it launch the application and verify the deployment.  After that, assuming everything worked, it will return to the command line without error.  
+This will take a little while and product a lot of output.  You'll see that it will detect the Python version in `runtime.txt` and then install the dependencies from `requirements.txt`.  Then it will launch the application and verify the deployment.  After that, assuming everything worked, it will return to the command line without error.  
 
 To see our application on the web, we have a URL reserved for us in the form:
 `[app-name].herokuapp.com`
@@ -216,9 +221,7 @@ git add .
 git commit -m 'message'
 git push heroku master
 ```
-And you don't have to push after every commit.  The push will push all of the commits since the last push
-
-The rest of this tutorial will focus on the application itself.  We'll add Bootstrap to make it look nice, create templates and forms, and hook it up to MongoDB.
+And you don't have to push after every commit.  Git will aggregrate the commits and push all made since the last push.
 
 ####Connecting to MongoDB
 
@@ -234,11 +237,11 @@ On the next page, under _Create new subscription_ select the following options:
 
 Give your database a name and click the _Create_ button.
 
-You'll then see the deployments page again, with the newly created database.
+You'll see the deployments page again with the newly created database.
 
 ![New DB](readme_images/mempydemomongo.png)
 
-Now we need to create a new user for the database to access it remotely.  Click on the new database.  You'll see the following page.  There will be a message that you should create a new user.  Click the link that is highlighted to create a new user.
+Now we need to create a new user for the database to access it remotely.  Click on the new database.  You'll see the following page.  There will be a message telling you to create a new user.  Click the link that is highlighted to create a new user.
 
 ![Create new user](readme_images/createnewuser.png)
 
@@ -248,7 +251,7 @@ Back in the database page, you'll see a URI of the form:
 ```
 mongodb://<dbuser>:<dbpassword>@<host>:<port>/<db>
 ```
-We will use this URI to connect to MongoDB from Python via a package called MongoEngine.  But first, we need to have a way for Python to know about the URI.  We could store it in a Python constants file but then that would make it visible to the world as we are using the free workspaces on Cloud9 and all of the files are public read-only.  However, we can use an environment variable to store the URI.  We can set up a new environment variable on Heroku using the web interface at [heroku.com](http://heroku.com).
+We will use this URI to connect to MongoDB from Python via a package called MongoEngine.  But first, we need to have a way for Python to know about the URI.  We could store it in a Python constants file but then that would make it visible to the world as we are using the free workspaces on Cloud9.  However, we can use an environment variable to store the URI.  Set up a new environment variable on Heroku using the web interface at [heroku.com](http://heroku.com).
 
 Log in to Heroku and you'll be taken to the dashboard where you'll see the app you created from before.  
 
@@ -256,12 +259,12 @@ Log in to Heroku and you'll be taken to the dashboard where you'll see the app y
 
 Click on it and then on _Settings_ tab.
 
-In Settings you'll see a section _Config Variables_.  Click on the link to show the config variables and then on the _Edit_ button on the right.  Create a new variable with the _KEY_ set to `MONGOLAB_URI` and the _VALUE_ set to the URI from MongoLab.  You'll need to substitute the username and password with those you created for the new database.  Then click the _Save_ button.
+In Settings you'll see a section named _Config Variables_.  Click on that link to show the config variables and then on the _Edit_ button on the right.  Create a new variable with the _KEY_ set to `MONGOLAB_URI` and the _VALUE_ set to the URI from MongoLab.  You'll need to substitute the username and password with those you created for the new database.  Then click the _Save_ button.
 
-That's got MongoDB set up on MongoLab and Heroku.  But this is our production database that is live on the web.  We want to be able to have a test database that we can experiement with.  Fortunately, Cloud9 has thought of this for us and has preinstalled MongoDB on our instance.  Let's get that set up next.
+That's got MongoDB set up on MongoLab and Heroku.  But MongoLab is our production database that is live on the web.  We want to be able to have a test database that we can experiement with during development.  Fortunately, Cloud9 has thought ahead for us and has preinstalled MongoDB on our instance.  Let's get that set up next.
 
 ######MongoDB on Cloud9
-The best way to set up MongoDB on Cloud9 is to refer to this page in the Cloud9 documentation: [https://docs.c9.io/v1.0/docs/setting-up-mongodb](https://docs.c9.io/v1.0/docs/setting-up-mongodb)
+The best way to set up MongoDB on Cloud9 is the steps on this page in the Cloud9 documentation which I've reproduced below: [https://docs.c9.io/v1.0/docs/setting-up-mongodb](https://docs.c9.io/v1.0/docs/setting-up-mongodb)
 
 In the root of your workspace (`~/workspace`), create a new directory called 'data' with the following command in the terminal:
 ```
@@ -283,19 +286,19 @@ Now run the script to start MongoDB:
 ./mongod
 ```
 
-You'll have to open a new terminal tab to continue because the server will consume the current one.  To do this, click on the (+) tab at then end of the tab bar for the terminal and select _New Terminal_:
+You'll have to open a new terminal tab to continue because the you can't use the current one without stopping MongoDB.  To do this, click on the (+) tab at then end of the tab bar for the terminal and select _New Terminal_:
 
 ![New terminal](readme_images/newterminal.png)
 
 Also, the new terminal will not have the virtual environment activated so you'll need to use the `workon` command to activate the virtual environment you created before.
 
 ######MongoEngine
-Now we need to install mongoengine, the Python package that will connect to MongoDB.  We will use pip to do this again:
+Now we need to install mongoengine, the Python package that will connect to MongoDB.  We will use pip to do this:
 ```
 pip install mongoengine
 ```
 
-We also need to update the `requirements.txt` file so that when we push to Heroku, mongoengine will be installed on the server:
+We also need to update the `requirements.txt` file so that the next time we push to Heroku, mongoengine will be installed on the server:
 ```
 pip freeze > requirements.txt
 ```
@@ -307,14 +310,14 @@ In my test file I will first connect to the database.  Mongoengine provides a fu
 from mongoengine import connect
 ```
 
-Then in the entry point call the `connect()` function and pass it the name of the database to use.  This will connect to the test instance of MongoDB we just set up.  Before we push to Heroku, we will set it up to connect to MongoLab.  We can use any database name for testing and MongoDB will create it for us:
+Then in the entry point call the `connect()` function and pass it the name of the database to use.  This will connect to the test instance of MongoDB we just set up.  (Before we push to Heroku, we will set the application up to connect to MongoLab.)  We can use any database name for testing and MongoDB will create it for us:
 
 ```python
 if __name__ == '__main__':
     connect('mempydemo')
 ```
 
-Now we need to tell MongoDB what data we want to store. We will keep it very simple and store shapes with two properties: a name (which will be a string), and a number of sides (an integer).  We will do this in a Python class.  However, MongoEngine gives us a class that tells MongoEngine how to load, save and do other things with data.  This class is called `Document`.  We'd like to use that so our class will inherit from `Document`:
+Now we need to tell MongoDB what data we want to store. We will keep it very simple and store shapes with two properties: a name (which will be a string), and a number of sides (an integer).  We will do this in a Python class.  However, MongoEngine gives us a class that tells MongoDB how to load, save and do other things with data.  This class is called `Document`.  We'd like to use that so our class will inherit from `Document`:
 
 ```python
 class Shape(Document):
@@ -363,24 +366,24 @@ if __name__ == '__main__':
     point.save()
 ```
 
-> You might notice the red 'x's in the gutter in the Cloud9 editor.  This is Cloud9 telling you that it can't find the method `save()` on the `Shape` objects.
+> You might notice the red x's in the gutter in the Cloud9 editor.  This is Cloud9 complaining that it can't find the method `save()` on the `Shape` objects.
 >
 > ![Editor 'error'](readme_images/xsc9editor.png)
 > 
-> However, this is not an error in this case.  The x's can be ignored.  The dynamic nature of Python makes static analysis difficult.  
+> However, this is not an error in this case.  The x's can be ignored.  The dynamic nature of Python makes static analysis difficult at times.  
 
 To run this test file, execute the command:
 ```
 python test_mongo.py
 ```
 
-If if looked like nothing happened, that is probably a good thing.  To see the data in the database we need to connect to it with the `mongo` command line app.  So in the terminal run the command:
+If if looked like nothing happened, and there were no errors, then it likely worked.  To see the data in the database we need to connect to it with the `mongo` command line app.  So in the terminal run the command:
 ```
 mongo
 ```
 
 
-You'll see some output similar to this: (ignore any warnings about the REST interface)
+You'll see some output similar to this: (ignore any warnings about the rest interface)
 ```
 MongoDB shell version: 2.6.7
 connecting to: test
@@ -389,20 +392,20 @@ Server has startup warnings:
 2015-03-28T23:25:19.828+0000 **          enabling http interface
 ```
 
-To see if out database was create run the `show dbs` command in the `mongo` shell.  The output will look something like this:
+To see if the database was created run the `show dbs` command in the `mongo` shell.  The output will look something like this:
 ```
 admin      (empty)
 local      0.078GB
 mempydemo  0.078GB
 ```
 
-And we can see that the database was created.  Switch to it with the `use mempydemo` command.  MongoDB store data as _documents_ inside of _collections_.  The `Shape` class we created represents a document.  So if we run the `show collections` command in the `mongo` shell we should see it:
+We can see that the database was created.  Make it the current database with the `use mempydemo` command.  MongoDB stores data as _documents_ inside of _collections_.  The `Shape` class we created represents a document.  So if we run the `show collections` command in the `mongo` shell we should see a collection for the `Shape` class:
 ```
 shape
 system.indexes
 ```
 
-To see the documents (data) that are inside of a collection, we can call the `find()` method on the collection.  In the `mongo` shell, the variable `db` refers to current database.  The collections are just properties on that `db`.  So to get all of the documents in the `shape` collection we would run:
+To see the documents (data) that are inside of a collection, we can call the `find()` method on the collection.  In the `mongo` shell, the variable `db` refers to current database ('mempydemo' in my project).  The collections are just properties on the `db`.  So to get all of the documents in the `shape` collection we would run:
 ```
 db.shape.find()
 ```
@@ -421,15 +424,15 @@ Now that we have a database server working, we can build out the rest of the app
 ```
 db.dropDatabase()
 ```
-This will delete the database but it will be recreated the next time we connect to it and save a document.  Exit the `mongo` shell with _Ctrl D_.  Then delete the test file.
+This will delete the database but it will be recreated the next time we connect to it and save a document.  Exit the `mongo` shell with _Ctrl-d_.  Then delete the test file.
 
 ####Flask and forms
-We're going to create the present day 'Hello world' app which is a todo list.  So first we'll create a form that will let a user create a new todo item.  We'll use an HTML template for this and have Flask display that template on the index page.  Templates in Flask are by default stored in a directory in the root of the application called `templates` so let's go ahead and create one:
+We're going to create the present day 'Hello world' app which is a todo list.  So first we'll create a form that will let a user create a new todo item.  We'll use an HTML template for this and have Flask display that template on the index page.  Templates in Flask are by default stored in a directory in the root of the application called `templates` so let's go ahead and create it:
 ```
 mkdir templates
 ```
 
-Next, inside of the `templates` folder, create a new template called `index.html` and add the following markup to it:
+Next, inside of the `templates` folder, create a new template file called `index.html` and add the following markup to it:
 ```html
 <html>
     <body>
@@ -442,7 +445,7 @@ Back in `main.py` import the `render_template` function from the `flask` package
 ```
 from flask import Flask, render_template
 ```
-This function will take the path of a template relative to the `templates` directory.  It will also optionally take a collection of keyword arguments to populate the template.  Then it will return a string representing the final HTML document.  For starter let's just render the document.  Change the body of the `index()` function:
+This function will take the path of a template relative to the `templates` directory.  It will also optionally take a collection of keyword arguments to populate the template.  Then it will return a string representing the final HTML document.  For starters let's just render the document.  Change the body of the `index()` function:
 ```python
 def index()
     return render_template('index.html')
@@ -451,7 +454,7 @@ def index()
 Now we can run the application and look at it in the browser.  You should see something like this:
 ![Template index](readme_images/templateindex.png)
 
-Let's put the form in the `index.html` template:
+Let's add the form to the `index.html` template:
 ```html
 <h3>Create a new task</h3>
 <form action="" method="post">
@@ -469,21 +472,21 @@ We'll make it look better after we get the application working.
 If you try to create a new task now, you'll get an error:
 ![Task error](readme_images/taskerror.png)
 
-This is because we specified the POST method in the form.  By default, request handler functions (such as `index()`) can only handle GET requests.  The `route` decorator accepts a list of methods that the handler function can handle:
+This is because we specified the POST method in the form.  By default, handler functions (such as `index()`) can only handle GET requests.  The `route` decorator accepts a list of methods that the handler function can handle:
 ```python
 @app.route('/', methods['GET', 'POST'])
 def index():
     return render_template('index.html')
 ```
 
-Make this change, save `main.py` and the server will restart.  Now you can press the button and get no errors.  But nothing appears to have happened.  That's because we are not watching for a POST request in the handler function.
+Make this change, save `main.py` and the server will restart.  Now you can click the button and get no errors.  But nothing appears to have happened.  That's because we are not watching for a POST request in the handler function.
 
-To detect POST requests, we'll need to import a member from `flask` called `request`:
+To detect POST requests, we'll need to import a object from `flask` called `request`:
 ```
 from flask import Flask, render_template, request
 ```
 
-This member will always represent the current HTTP request.  It has a `method` property that will hold the method of the current request such as 'GET' or 'POST'.  If the method is a GET request, we'll return the template.  If it is a POST request, we'll use the `form` property of `request` to access the form values.  This `form` property is a dictionary like object that we can use to access the form values by name.  So the `index()` function now looks like this:
+This object will always represent the current HTTP request.  It has a `method` property that will hold the method of the current request such as 'GET' or 'POST'.  If the method is a GET request, we'll return the template.  If it is a POST request, we'll use the `form` property of `request` to access the form values.  This `form` property is a dictionary like object that we can use to access the form values by name.  So the `index()` function now looks like this:
 ```python
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -505,10 +508,11 @@ Save `main.py` and the server will restart.  Then the form should work as in the
 Now we have all the pieces that we need to store todo items in MongoDB. So let's implement that next.  
 
 First we need a class deriving from `Document` that will represent a todo item.  The class will have:
-* task - string (`StringField`)
-* duedays - integer (`IntField`)
-* priority - integer (`IntField`)
-* complete - boolean (`BooleanField`)
+ 
+ * task - string (`StringField`)
+ * duedays - integer (`IntField`)
+ * priority - integer (`IntField`)
+ * complete - boolean (`BooleanField`)
 
 Here is the code for our TodoItem class:
 ```python
@@ -616,7 +620,7 @@ Will get all of the `TodoItem` documents as `TodoItem` inherits from `Document`.
 return render_template('index.html', todos=TodoItem.objects)
 ```
 
-Now we will use a templating language that is part of the Jinja2 package inside of `index.html` to iterate through `todos` and print the task for each one.  Jinja2 is installed as part of Flask. (`pip freeze` to verify it is installed).  Before the form in `index.html` add this code:
+Now we will use a templating language that is part of the Jinja2 package inside of `index.html` to iterate through `todos` and render the task for each one.  Jinja2 is installed as part of Flask. (`pip freeze` to verify it is installed).  Before the form in `index.html` add this code:
 ```html
 <h3>All Todos</h3>
 <ul>
@@ -695,7 +699,7 @@ Now switch over to `index.html`.  Add a `<head>` tag and a `<link>` tag inside o
 
 > Inside an HTML file with the Cloud9 editor, you can type 'head' and then press the TAB key to have it generate the opening and closing tag.  You can do the same with 'link' and it will also fill in some of the most used attributes as well.
 
-In the 'href' attribute paste the link from cdnjs.com for Bootstrap.  We will also need some custom styles to highlight high priority and overdue tasks.  So add another `<link>` tag.  This time the 'href' attribute will be the path to a custom CSS file.  In Flask, static assets like styles and scripts are stored in a directory in the root of the application called `static` so go ahead and create that now and then a file inside called `styles.css`.  We'll leave it empty for now.  To get the path for a static file we'll use a special function called `url_for` which is provided by Flask.  This function specifies 'static' as the directory to find the 'filename' in.  The `<head>` tag should now look like this:
+In the 'href' attribute paste the link from cdnjs.com for Bootstrap.  We will also need some custom styles to highlight high priority and overdue tasks.  So add another `<link>` tag.  This time the 'href' attribute will be the path to a custom CSS file.  In Flask, static assets like styles and scripts are stored in a directory in the root of the application called `static` so go ahead and create that now and then a file inside called `styles.css`.  We'll leave it empty for now.  To get the URL for a static file we'll use a special function called `url_for` which is provided by Flask.  This function specifies 'static' as the directory to find the 'filename' `styles.css` in.  Since the function call is in double curly braces, the return value (the URL of the filename) will be rendered as text.  The `<head>` tag should now look like this:
 
 ```html
 <head>
@@ -718,7 +722,7 @@ Next we'll use the grid layout that Bootstrap gives us to make the form look bet
 </body>
 ```
 
-> To quickly create the `<div>` tag with a `container` class, simple type `div.container` and then press the TAB key in the Cloud9 editor.
+> To quickly create the `<div>` tag with a `container` class, simply type `div.container` and then press the TAB key in the Cloud9 editor.
 
 Grids have rows and columns.  With Bootstrap, each row is a `<div>` tag with a class of `row`.  Place each label and text box in the form in a `<div>`.  Be sure to remove the `<br>` tag.
 
@@ -732,7 +736,7 @@ Grids have rows and columns.  With Bootstrap, each row is a `<div>` tag with a c
 </div>
 ```
 
-The label and text box should each be in a column.  The class for a column that we are using is 'col-md-2'.  The 'col' is for 'column', the 'md' is for 'medium', and the '2' is for width of 2 units.  All rows in Bootstrap have a width of 12 'units'.  The length of a unit depends on the width of the page because Bootstrap is responsive.  The 'md' has some effect on this as well.  We aren't going to get into responsive design here.  The template should start looking like this:
+The label and text box should each be in a column.  The class for a column that we are using is 'col-md-2'.  The 'col' is for 'column', the 'md' is for 'medium', and the '2' is for width of 2 units.  All rows in Bootstrap have a width of 12 'units.  The length of a unit is relative to the width of the page because Bootstrap is responsive.  The 'md' has some effect on this as well.  (We eon't get into responsive design here.  Recall I am not a designer.)  The template should start looking like this:
 
 ```html
 <div class="container">
@@ -756,7 +760,7 @@ Next we need to work on the list of tasks.  But there are some loose ends we nee
 
 
 ####Refining our model class
-We need to update the model class (`TodoItem`) so that it stores actual dates.  We also need to add some methods to determine the number of days until a task is overdue and if a task is overdue.
+We need to update the model class (`TodoItem`) so that it stores actual dates.  We also need to add some methods to determine the number of days until a task is due and if a task is overdue.
 
 MongoEngine has a `DateTimeField` type that we can use for the due date.  So remove the `duedays` field in `TodoItem` and replace it with:
 
@@ -855,7 +859,7 @@ Now for the list.  Remove the `<ul>` and the line with the `<li>` tag.  Inside t
 {% endfor %}
 ```
 
-Next add a row for each `TodoItem` with a column for the task, due date and priority:
+Next add a row for each `TodoItem` with a column for the `task`, `due_date` and `priority`:
 
 ```html
 <div class="row spacer">
@@ -865,7 +869,7 @@ Next add a row for each `TodoItem` with a column for the task, due date and prio
 </div>
 ```
 
-We need to add a call to the strftime on the `due_date`.  This will format the date in a human readable string.  The format I will use is 'month/day/year':
+We need to add a call to the `strftime()` method on the `due_date`.  This will format the date in a readable string.  The format I will use is 'month/day/year': (For a great reference on the `strftime()` format string, check out [this page](http://strftime.org).
 
 ```html
 <div class="col-md-2">{{ item.due_date.strftime('%m/%d/%Y') }}</div>
@@ -879,7 +883,7 @@ Finally, let's add a call to the `compute_style` method of `TodoItem` that will 
 </div>
 ```
 
-One last thing.  We changed the data model so the easiest way to deal with this is going to be to drop the database.  This is not how you would handle a production application but in this case it will suffice.  Open the `mongo` shell in a terminal and run:
+One last thing.  We changed the data model and the easiest way to deal with this is to just drop the database.  This is not how you would handle a production application but in this case it will suffice.  Open the `mongo` shell in a terminal and run:
 
 ```
 use mempydemo
@@ -888,12 +892,12 @@ db.dropDatabase()
 
 Now you can refresh the site.  It has no items so let's a add few:
 
- * Task: Very Important, Days until due: 7, Priority: 10
+ * Task: Very important, Days until due: 7, Priority: 10
  * Task: Overdue, Days until due: -1, Priority: 2
- * Task: Due Today, Days until due: 0, Priority: 5
+ * Task: Due today, Days until due: 0, Priority: 5
  * Task: Nothing special, Days until due: 14, Priority : 5
 
-> In a production application, you might add validation to prevent a due date for a new task from being in the past.  However, for our purposes it is a convenient way to create overdue tasks. :)
+> In a production application, you might add validation to prevent a due date for a new task from being in the past (as in the second task).  However, for our purposes it is a convenient way to create overdue tasks. :)
 
 Take a look at our list now:
 
