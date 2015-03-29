@@ -668,7 +668,10 @@ git commit -m 'push to heroku with mongodb'
 git push heroku master
 ```
 
-You can now go to `[app-name].herokapp.com` and see the application working on Heroku.  Also, you can go to [mongolab.com](http://mongolab.com) and browse the database:
+You can now go to `[app-name].herokapp.com` and see the application working on Heroku. 
+![Tasks on Heroku](readme_images/taskheroku.png)
+
+Also, you can go to [mongolab.com](http://mongolab.com) and browse the database:
 ![Tasks on MongoLab](readme_images/tasksonline.png)
 
 > If you are having trouble with your MongoLab URI, you can try to connect via the `mongo` shell in the Cloud9 terminal with the command:
