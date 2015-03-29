@@ -756,3 +756,155 @@ Next we need to work on the list of tasks.  But there are some loose ends we nee
 
 
 ####Refining our model class
+We need to update the model class (`TodoItem`) so that it stores actual dates.  We also need to add some methods to determine the number of days until a task is overdue and if a task is overdue.
+
+MongoEngine has a `DateTimeField` type that we can use for the due date.  So remove the `duedays` field in `TodoItem` and replace it with:
+
+
+```python
+due_date = DateTimeField()
+```
+
+> Don't forget to import `DateTimeField` from `mongoengine`.
+
+Now in the entry point, just before creating the new `TodoItem`, add the following line:
+
+
+```python
+due_date = datetime.datetime.now() + datetime.timedelta(days=duedays)
+```
+
+This code uses the `datetime` module (so it needs to be imported) to get the current date and time.  Then it creates a `timedelta` which can be added to a datetime.  When we create the `timedelta` we specify its length in days.  So if `duedays` were 7, then `due_date` would be one week in the future.
+
+Back in `TodoItem`, let's add a couple of methods.  Remember this is still just a Python class.  The first one will be called `is_overdue`.  We'll simply compare the `due_date` of the `TodoItem` with the current `datetime`.  If `due_date` is less, the task is overdue, otherwise it is not.
+
+```python
+def is_overdue(self):
+    return self.due_date.date() < datetime.datetime.now().date() #>
+```
+
+Note that we are using the `date()` method to compare just the day as opposed to a specific hour and minute.
+
+The other method is called `days_till_due` and will just return the number of days left until the task is due.  
+
+```python
+def days_till_due(self):
+    delta = self.due_date.date() - datetime.datetime.now().date()
+    return delta.days
+```
+
+Here we are subtracting the dates of two `datetime` objects and the difference between them is a `timedelta`.  The `timedelta` has a `days` property which is what we want to return.
+
+One last method that we need to create is a method to determine what CSS style is represented by different `TodoItem` states such as high priority or overdue.  (We'll create the styles soon.)
+
+```python
+def compute_style(self):
+    the_class = ''
+    if self.priority > 5:
+        the_class += ' hi-priority'
+    if self.days_till_due() == 0:
+        the_class += ' due-today'
+    if self.is_overdue():
+        the_class = ' overdue'
+
+    return the_class
+```
+
+This function just looks at the state of the `TodoItem` and returns a string representing the class to reflect the state.  There is no style for completed tasks as they will not be shown in the list.
+
+####Styles
+Here is the `styles.css` file.  It's short and should be self explanatory.
+
+```css
+.hi-priority {
+    color: blue;
+}
+
+.overdue {
+    color: red;
+    font-weight: bold;
+}
+
+.due-today {
+    font-weight: bold;
+}
+
+.spacer {
+    margin-bottom: 5px;
+}
+```
+
+####Styling the todo list
+Let's make the list of `TodoItem` more readable.  First we'll add a header to say what each column is.  Put this right after the `<h3>` tag at the top of the page:
+
+```html
+<div class="row">
+    <div class="col-md-2">Task</div>
+    <div class="col-md-2">Due Date</div>
+    <div class="col-md-2">Priority</div>
+</div>
+```
+
+Now for the list.  Remove the `<ul>` and the line with the `<li>` tag.  Inside the for loop add an if statement to make sure the `TodoItem` is not complete.  If it is not complete, we will display it:
+
+```html
+{% for item in todos %}
+    {% if not item.complete %}
+        ...
+    {% endif %}
+{% endfor %}
+```
+
+Next add a row for each `TodoItem` with a column for the task, due date and priority:
+
+```html
+<div class="row spacer">
+    <div class="col-md-2">{{ item.task }}</div>
+    <div class="col-md-2">{{ item.due_date }}</div>
+    <div class="col-md-2">{{ item.priority }}</div>
+</div>
+```
+
+We need to add a call to the strftime on the `due_date`.  This will format the date in a human readable string.  The format I will use is 'month/day/year':
+
+```html
+<div class="col-md-2">{{ item.due_date.strftime('%m/%d/%Y') }}</div>
+```
+
+Finally, let's add a call to the `compute_style` method of `TodoItem` that will get the style to reflect the item's state:
+
+```html
+<div class="row spacer{{ item.compute_style() }}">
+    ...
+</div>
+```
+
+One last thing.  We changed the data model so the easiest way to deal with this is going to be to drop the database.  This is not how you would handle a production application but in this case it will suffice.  Open the `mongo` shell in a terminal and run:
+
+```
+use mempydemo
+db.dropDatabase()
+```
+
+Now you can refresh the site.  It has no items so let's a add few:
+
+ * Task: Very Important, Days until due: 7, Priority: 10
+ * Task: Overdue, Days until due: -1, Priority: 2
+ * Task: Due Today, Days until due: 0, Priority: 5
+ * Task: Nothing special, Days until due: 14, Priority : 5
+
+> In a production application, you might add validation to prevent a due date for a new task from being in the past.  However, for our purposes it is a convenient way to create overdue tasks. :)
+
+Take a look at our list now:
+
+![List with states](readme_images/statelist.png)
+
+This is getting somewhere!  We have a few more things to do to finish up.  First we need to be able to mark tasks as complete.  Second, we'd like to sort tasks by priority or due date.  Finally, we would like to be able to view which tasks have been completed.  This requires a little more Bootstrap but is most about querying MongoDB.  We'll cover that in the next sections.
+
+
+
+
+
+
+
+
