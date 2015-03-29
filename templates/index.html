@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.4/css/bootstrap.min.css" type="text/css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css" type="text/css" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" type="text/css" />
+    </head>
+    <body>
+        <div class="container">
+            <h3>All Todos</h3>
+            <div class="row">
+                <div class="col-md-2">Task</div>
+                <div class="col-md-2"><a href="{{ sort_url('due_date', direction) }}">Due Date&nbsp;{{ sort_icon('due_date', sort_by, direction)|safe }}</a></div>
+                <div class="col-md-2"><a href="{{ sort_url('priority', direction) }}">Priority&nbsp;{{ sort_icon('priority', sort_by, direction)|safe }}</a></div>
+            </div>
+            {% for item in todos %}
+                {% if not item.complete %}
+                    <div class="row spacer{{ item.compute_style() }}">
+                        <div class="col-md-2">{{ item.task }}</div>
+                        <div class="col-md-2">{{ item.due_date.strftime('%m/%d/%Y') }}</div>
+                        <div class="col-md-2">{{ item.priority }}</div>
+                        <div class="col-md-2">
+                            <a href="/mark_complete?id={{ item.id }}" class="btn btn-primary">Complete</a>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            </ul>
+            <h3>Create a new task</h3>
+            <form action="" method="post">
+                <div class="row spacer">
+                    <div class="col-md-2">Task: </div>
+                    <div class="col-md-2"><input type="text" name="task"></div>
+                </div>
+                 <div class="row spacer">
+                    <div class="col-md-2">Days until due: </div>
+                    <div class="col-md-2"> <input type="text" name="duedays"></div>
+                </div>
+                 <div class="row spacer">
+                    <div class="col-md-2">Priority: </div>
+                    <div class="col-md-2"><input type="text" name="priority"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <input type="submit" value="Create Task">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </body>
+</html>

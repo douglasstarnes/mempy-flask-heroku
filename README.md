@@ -964,6 +964,114 @@ switched to db mempydemo
 
 The `complete` property for the second task has been changed to `true`.  
 
+######Sorting by columns
+
+The last feature that I am going to add to the application is the ability to sort by columns.  So if you click on a column it will sort by that column and if you click on an already sorted column it will reverse the sort order.  Also, an icon will be shown next to the sorted column indicating its sort order.
+
+First, we need to be able to get the column to sort by and the sorting order.  Since clicking on links will indicate these, it would be fine to put them in the query string.  So let's change `main.py` in the body for the if statement when the method is 'GET'.  I'll call the column `sort_by` and the order `direction`.  The `sort_by` will be the name of the column as it is in MongoDB and the `direction` will be either 'asc' for ascending or 'desc' for descending.
+
+```python 
+if request.method == 'GET':
+    sort_by = 'due_date'
+    direction = 'asc'
+
+    if request.args.get('sort_by') is not None:
+        sort_by = request.args.get('sort_by')
+
+    if request.args.get('direction') is not None:
+        direction = request.args.get('direction')
+
+    query = '-' if direction == 'desc' else ''
+    query += sort_by
+```
+
+The `query` is what MongoDB will look at to sort the `TodoItem` results.  It is simply the name of a column, optionally prefixed with a '-' (minus) if the results should be sorted in descending order.  Ascending is the default for sort order.  To perform the sort, just call `order_by()` on `TodoItem.objects` and pass it the query.  So the call to `render_template` becomes:
+
+```python
+return render_template('index.html', todos=TodoItem.objects.order_by(query))
+```
+
+That's the easy part.  Getting it hooked up is a little tricky.  The headers for the due date and priority will become links.  The 'href' for those links will be dynamically generated depending on what the current column and sort order are.  So I wrote a function to generate them:
+
+```python
+def sort_url(current, direction):
+    return '/?sort_by={0}&direction={1}'.format(current, 'asc' if direction == 'desc' else 'desc')
+```
+
+The `current` parameter will be the column this link refers to, either 'due_date' or 'priority'.  The `direction` will be the direction passed in the query string.  Then it returns the formatted URL.  Since this URL is different for each column, we need to call it in the template.  Fortunately, we can pass functions as keyword arguments.  We also need to pass the `direction` from the query string.  So modify the call to `render_template` once again:
+
+```python
+return render_template('index.html', todos=TodoItem.objects.order_by(query), direction=direction sort_url=sort_url)
+```
+
+In `index.html` wrap the header text for the due date and priority with `<a>` tags.  Then place a call to `sort_url` in the 'href' attribute:
+
+```html
+<div class="col-md-2"><a href="{{ sort_url('due_date', direction) }}">Due Date</a></div>
+```
+
+To get the icon, we're going to use a CSS library called Font Awesome.  We can find this on cdnjs.com as well.  Search for _font awesome_ and 'font-awesome' should be at the top (or near the top) of the results.  Click on the link and then on the _Copy_ button for the _font-awesome.min.css' link.  Add a new `<link>` tag to the `<head>` tag after Bootstrap and paste the Font Awesome link in the 'href' attribute.
 
 
+The two icons we will use are 'arrow-up' (for 'asc') and 'arrow-down' (for 'desc').  To prevent the code from having a lot of if statements, I create a dictionary mapping these values at the top of `main.py` after the imports:
+
+```python
+sort_icons = {
+    'asc': 'arrow-up',
+    'desc': 'arrow-down'
+}
+```
+
+The HTML for a Font Awesome icon is an `<i>` tag with a class corresponding to the icon name so for our ascending column we would use:
+
+
+```html
+<i class="fa fa-arrow-up"></i>
+```
+
+
+Which would render this icon:
+
+![Font Awesome arrow up](readme_images/faarrowup.png)
+
+Just like the URL for the column headers, we'll generate this markup depending on the column and sort order:
+
+
+```python
+def sort_icon(current, sort_by, direction):
+    if current == sort_by:
+        return '<i class="fa fa-{0}"></i>'.format(sort_icons[direction])
+    return ''
+```
+
+We only want to generate markup for the column that is being sorted, so we'll compare it with the current column.  When they match, generate the markup and get the icon for the direction.  Otherwise return an empty string.  To use this function in the template, pass it as a keyword argument in `render_template` along with `sort_by`:
+
+```python
+return render_template('index.html', todos=TodoItem.objects.order_by(query), sort_by=sort_by, direction=direction, sort_url=sort_url, sort_icon=sort_icon)
+```
+
+Then in the template, add some space next to the column header with `&nbsp;` and then a call to `sort_icon`:
+
+```html
+<div class="col-md-2"><a href="{{ sort_url('due_date', direction) }}">Due Date&nbsp;{{ sort_icon('due_date', sort_by, direction)|safe }}</a></div>
+```
+
+Also, the output of sort_icon is by default, escaped by Flask for security reasons.  So we would see the markup in the page instead of the icon.  Supress the escaping by filtering the output from `sort_icon` with `safe`.
+
+Let's take a look at the finished app:
+
+![Priority asc](readme_images/priorityasc.png)
+---
+![Due date desc](readme_images/duedatedesc.png)
+
+####Final Thoughts
+
+The reason I did this was so that we would have a base to start building apps that people would bring to the meetings and share.  Please feel free to take this code and do what you want with it.  You'll notice it is MIT licensed.  Here are some ideas for how to extend this app:
+
+ * What if you accidentally mark a task as complete?  How would you unmark it?
+ * Extend the due date by a number of days the user provides
+ * Filter the tasks by state such as overdue or high priority
+ * Validation - some fields in the form should only take numbers
+ 
+Enjoy!
 

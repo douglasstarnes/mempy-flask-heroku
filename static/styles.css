@@ -1,0 +1,16 @@
+.hi-priority {
+    color: blue;
+}
+
+.overdue {
+    color: red;
+    font-weight: bold;
+}
+
+.due-today {
+    font-weight: bold;
+}
+
+.spacer {
+    margin-bottom: 5px;
+}
