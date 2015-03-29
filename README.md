@@ -603,3 +603,88 @@ todo_item
 
 
 Sure enough it worked!  Now we need to display a list of the todo items.  The index page is a good place to do that, just before the form to create a new todo item.
+
+
+#### Displaying a list of TodoItems
+Getting the `TodoItem` documents out of the database could not be easier.  The `Document` class has an `objects` property which will get all documents of that type from MongoDB.  So the line:
+```python
+TodoItem.objects
+```
+
+Will get all of the `TodoItem` documents as `TodoItem` inherits from `Document`.  Now we need to send those documents to the template.  So modify the call to `render_template`:
+```python 
+return render_template('index.html', todos=TodoItem.objects)
+```
+
+Now we will use a templating language that is part of the Jinja2 package inside of `index.html` to iterate through `todos` and print the task for each one.  Jinja2 is installed as part of Flask. (`pip freeze` to verify it is installed).  Before the form in `index.html` add this code:
+```html
+<h3>All Todos</h3>
+<ul>
+{% for item in todos %}
+    <li>{{ item.task }}</li>
+{% endfor %}
+</ul>
+```
+As you can see, this reads very much like Python.  The `{% %}` syntax escapes the templating language.  The value inside the double curly braces is rendered as text.  Save all files, the server will restart and if you go to the root of the site ('/') you should see the task you just created:
+
+![Task list](readme_images/tasklist.png)
+
+This is looking good, but there is still more to be done.  It would be nice to be able to mark items as complete, highlight overdue items, sort items by priority and more.  This would be best served with buttons and styling.  Bootstrap makes short of that so we'll tackle it next.  But first, let's push what we have to Heroku.
+
+####Push to Heroku again
+We have some prep work to do before we can push to Heroku.  First, there are some files that we don't want to push.  That would be the `data` directory and the `mongod` script.  We can tell Git to ignore these files by placing their paths in a `.gitignore` file.  So create a `.gitignore` file with the following:
+```
+mongod
+data/
+.c9/
+```
+The `.c9` directory is created by Cloud9 so we don't need to send it to Heroku.
+
+Next we need to tell Flask which database to connect to if it is running on Heroku.  Remember that we created an environment variable on Heroku through the web interface called `MONGOLAB_URI` that points to a database on MongoLab's servers.  To check if it exists run this command in the terminal:
+```
+heroku config
+```
+
+And the output will be something like this: (obviously your urls will vary)
+```
+=== mymempydemo Config Vars
+MONGOLAB_URI: mongodb://heroku_app35297401:<your_password_here>@ds059888.mongolab.com:59888/heroku_app35297401
+```
+
+This environment variable does not exist on Cloud9 so if we can access it, we can assume we are running on Heroku.  Therefore a simple `if` clause can be added to the top of `main.py` in place of the `connect()` call:
+```python
+if os.getenv('MONGOLAB_URI') is not None: # on Heroku
+    mongolab_uri = os.getenv('MONGOLAB_URI')
+    db = mongolab_uri[mongolab_uri.rfind('/')+1:] #extract the database name
+    connect(db, host=mongolab_uri)
+else: # on Cloud9
+    connect('mempydemo')
+```
+
+Now we can proceed with the check in dance and push to Heroku:
+```
+git add .
+git commit -m 'push to heroku with mongodb'
+git push heroku master
+```
+
+You can now go to `[app-name].herokapp.com` and see the application working on Heroku.  Also, you can go to [mongolab.com](http://mongolab.com) and browse the database:
+![Tasks on MongoLab](readme_images/tasksonline.png)
+
+> If you are having trouble with your MongoLab URI, you can try to connect via the `mongo` shell in the Cloud9 terminal with the command:
+>
+> `mongo <host>:<port>/<db> -u <dbuser> -p <dbpassword>`
+>
+> You get all of the variables from the URI which is:
+>
+> `mongodb://<dbuser>:<dbpassword>@<host>:<port>/<db>`
+
+The next part will show how to make things look nice with Bootstrap and then we'll look at updating data so we can mark items as complete.  Check back soon!
+
+
+
+
+
+
+
+
