@@ -292,10 +292,8 @@ Also, the new terminal will not have the virtual environment activated so you'll
 ######MongoEngine
 Now we need to install mongoengine, the Python package that will connect to MongoDB.  We will use pip to do this again:
 ```
-sudo pip install mongoengine
+pip install mongoengine
 ```
-
-> Note that this time we have to use the `sudo` command to run with elevated privileges.
 
 We also need to update the `requirements.txt` file so that when we push to Heroku, mongoengine will be installed on the server:
 ```
@@ -503,5 +501,105 @@ Save `main.py` and the server will restart.  Then the form should work as in the
 ---
 ![Task after](readme_images/taskafter.png)
 
+######Storing the Todo items
+Now we have all the pieces that we need to store todo items in MongoDB. So let's implement that next.  
+
+First we need a class deriving from `Document` that will represent a todo item.  The class will have:
+* task - string (`StringField`)
+* duedays - integer (`IntField`)
+* priority - integer (`IntField`)
+* complete - boolean (`BooleanField`)
+
+Here is the code for our TodoItem class:
+```python
+class TodoItem(Document):
+    task = StringField()
+    duedays = IntField()
+    priority = IntField()
+    complete = BooleanField()
+```
+
+> Don't forget to import `Document`, `StringField`, `IntField` and `BooleanField` from the `mongoengine` package.
+
+At the top of the file, right after creating the Flask app, add a call to `connect()`:
+```python
+connect('mempydemo')
+```
+
+> Don't forget to import `connect` from the `mongoengine` package.
+
+Next, inside of the `index()` function where we handle the POST request, replace the body with the following code:
+```python
+task = request.form['task']
+duedays = int(request.form(['duedays'])
+priority = int(request.form['priority'])
+complete = False
+
+todo = TodoItem(task=task, duedays=duedays, priority=priority, complete=complete)
+todo.save()
+
+return redirect('/')
+```
+
+First, the `redirect()` function will tell the browser to go to the URL passed to it.  You'll need to import `redirect` from the `flask` package.  Also, we always set `complete` to `False`.  It doesn't make much sense to create todo item that is already complete.
+
+For reference, here is the entire `main.py` file since we have made so many changes:
+```python
+# main.py (this is a comment)
+from flask import Flask, render_template, request, redirect
+import os
+from mongoengine import connect, Document, StringField, IntField, BooleanField
+
+app = Flask(__name__)
+app.debug = True
+
+connect('mempydemo')
+
+class TodoItem(Document):
+    task = StringField()
+    duedays = IntField()
+    priority = IntField()
+    complete = BooleanField()
+    
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    if request.method == 'GET':
+        return render_template('index.html')
+    elif request.method == 'POST':
+        task = request.form['task']
+        duedays = int(request.form['duedays'])
+        priority = int(request.form['priority'])
+        complete = False
+        
+        todo = TodoItem(task=task, duedays=duedays, priority=priority, complete=complete)
+        todo.save()
+        
+        return redirect('/')
+    
+if __name__ == '__main__':
+    port = int(os.getenv('PORT', 8080))
+    host = os.getenv('IP', '0.0.0.0')
+    app.run(port=port, host=host)
+```
+Save the file to restart the server and try to enter a new task.  It will appear that nothing happened.  So let's run the `mongo` shell and see if we have a TodoItem document in the database:
+```
+MongoDB shell version: 2.6.7
+connecting to: test
+Server has startup warnings: 
+2015-03-28T23:25:19.828+0000 ** WARNING: --rest is specified without --httpinterface,
+2015-03-28T23:25:19.828+0000 **          enabling http interface
+> show dbs
+admin      (empty)
+local      0.078GB
+mempydemo  0.078GB
+> use mempydemo
+switched to db mempydemo
+> show collections
+system.indexes
+todo_item
+> db.todo_item.find()
+{ "_id" : ObjectId("55175599be0cfc0f89dd46dc"), "task" : "My new task", "duedays" : 7, "priority" : 10, "complete" : false }
+```
 
 
+Sure enough it worked!  Now we need to display a list of the todo items.  The index page is a good place to do that, just before the form to create a new todo item.
