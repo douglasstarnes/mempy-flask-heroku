@@ -366,6 +366,7 @@ if __name__ == '__main__':
 ```
 
 > You might notice the red 'x's in the gutter in the Cloud9 editor.  This is Cloud9 telling you that it can't find the method `save()` on the `Shape` objects.
+>
 > ![Editor 'error'](readme_images/xsc9editor.png)
 > 
 > However, this is not an error in this case.  The x's can be ignored.  The dynamic nature of Python makes static analysis difficult.  
