@@ -1064,6 +1064,22 @@ Let's take a look at the finished app:
 ---
 ![Due date desc](readme_images/duedatedesc.png)
 
+####Push to Heroku
+
+The only thing left to do now is push the final version to Heroku.  Go through the check in dance one more time:
+
+```
+git add .
+git commit -m 'final version'
+git push heroku master
+```
+
+Before you try to run the app though, go into MongoLab and delete the `todo_item` collection so that the old data model doesn't cause any problems
+
+![Delete old model](readme_images/deleteoldmodel.png)
+
+That's it!  You've built a database driven web app, without ever leaving the browser, and it was all free!
+
 ####Final Thoughts
 
 The reason I did this was so that we would have a base to start building apps that people would bring to the meetings and share.  Please feel free to take this code and do what you want with it.  You'll notice it is MIT licensed.  Here are some ideas for how to extend this app:
@@ -1071,7 +1087,7 @@ The reason I did this was so that we would have a base to start building apps th
  * What if you accidentally mark a task as complete?  How would you unmark it?
  * Extend the due date by a number of days the user provides
  * Filter the tasks by state such as overdue or high priority
- * Validation - some fields in the form should only take numbers
+ * Validation - some fields in the form should only accept numbers
  
 Enjoy!
 
