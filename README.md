@@ -1,6 +1,10 @@
 #Deploying a Flask app to Heroku
 At the MEMpy meeting in March, we saw how to create and deploy a simple Flask application to Heroku using the Cloud9 IDE.  What follows is a detailed description of how to recreate a similiar application.
 
+If you like what is going on here, please consider donating on Gratipay (formerly Gittip) so I can improve this tutorial and continue to write more.  Thanks for your support!
+
+[![Support via Gratipay](https://cdn.rawgit.com/gratipay/gratipay-badge/2.3.0/dist/gratipay.png)](https://gratipay.com/douglasstarnes/)
+
 ####What you'll need
 Before you begin you'll need to sign up for a few online services:
 
