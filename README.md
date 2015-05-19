@@ -1,3 +1,5 @@
+(Note this is also available as an ebook on [LeanPub](https://leanpub.com/flask-cloud9-heroku-mongodb-ebook).  Note that no payment is required, just set the price slider to free.)
+
 #Deploying a Flask app to Heroku
 At the MEMpy meeting in March, we saw how to create and deploy a simple Flask application to Heroku using the Cloud9 IDE.  What follows is a detailed description of how to recreate a similiar application.
 
@@ -355,10 +357,10 @@ from mongoengine import connect, Document, StringField, IntField
 class Shape(Document):
     name = StringField()
     sides = IntField()
-    
+
 if __name__ == '__main__':
     connect('mempydemo')
-    
+
     square = Shape('square', 4)
     octagon = Shape('octagon', 8)
     circle = Shape('circle', 1)
@@ -373,7 +375,7 @@ if __name__ == '__main__':
 > You might notice the red x's in the gutter in the Cloud9 editor.  This is Cloud9 complaining that it can't find the method `save()` on the `Shape` objects.
 >
 > ![Editor 'error'](readme_images/xsc9editor.png)
-> 
+>
 > However, this is not an error in this case.  The x's can be ignored.  The dynamic nature of Python makes static analysis difficult at times.  
 
 To run this test file, execute the command:
@@ -391,7 +393,7 @@ You'll see some output similar to this: (ignore any warnings about the rest inte
 ```
 MongoDB shell version: 2.6.7
 connecting to: test
-Server has startup warnings: 
+Server has startup warnings:
 2015-03-28T23:25:19.828+0000 ** WARNING: --rest is specified without --httpinterface,
 2015-03-28T23:25:19.828+0000 **          enabling http interface
 ```
@@ -512,7 +514,7 @@ Save `main.py` and the server will restart.  Then the form should work as in the
 Now we have all the pieces that we need to store todo items in MongoDB. So let's implement that next.  
 
 First we need a class deriving from `Document` that will represent a todo item.  The class will have:
- 
+
  * task - string (`StringField`)
  * duedays - integer (`IntField`)
  * priority - integer (`IntField`)
@@ -568,7 +570,7 @@ class TodoItem(Document):
     duedays = IntField()
     priority = IntField()
     complete = BooleanField()
-    
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'GET':
@@ -578,12 +580,12 @@ def index():
         duedays = int(request.form['duedays'])
         priority = int(request.form['priority'])
         complete = False
-        
+
         todo = TodoItem(task=task, duedays=duedays, priority=priority, complete=complete)
         todo.save()
-        
+
         return redirect('/')
-    
+
 if __name__ == '__main__':
     port = int(os.getenv('PORT', 8080))
     host = os.getenv('IP', '0.0.0.0')
@@ -593,7 +595,7 @@ Save the file to restart the server and try to enter a new task.  It will appear
 ```
 MongoDB shell version: 2.6.7
 connecting to: test
-Server has startup warnings: 
+Server has startup warnings:
 2015-03-28T23:25:19.828+0000 ** WARNING: --rest is specified without --httpinterface,
 2015-03-28T23:25:19.828+0000 **          enabling http interface
 > show dbs
@@ -620,7 +622,7 @@ TodoItem.objects
 ```
 
 Will get all of the `TodoItem` documents as `TodoItem` inherits from `Document`.  Now we need to send those documents to the template.  So modify the call to `render_template`:
-```python 
+```python
 return render_template('index.html', todos=TodoItem.objects)
 ```
 
@@ -676,7 +678,7 @@ git commit -m 'push to heroku with mongodb'
 git push heroku master
 ```
 
-You can now go to `[app-name].herokapp.com` and see the application working on Heroku. 
+You can now go to `[app-name].herokapp.com` and see the application working on Heroku.
 ![Tasks on Heroku](readme_images/taskheroku.png)
 
 Also, you can go to [mongolab.com](http://mongolab.com) and browse the database:
@@ -974,7 +976,7 @@ The last feature that I am going to add to the application is the ability to sor
 
 First, we need to be able to get the column to sort by and the sorting order.  Since clicking on links will indicate these, it would be fine to put them in the query string.  So let's change `main.py` in the body for the if statement when the method is 'GET'.  I'll call the column `sort_by` and the order `direction`.  The `sort_by` will be the name of the column as it is in MongoDB and the `direction` will be either 'asc' for ascending or 'desc' for descending.
 
-```python 
+```python
 if request.method == 'GET':
     sort_by = 'due_date'
     direction = 'asc'
@@ -1092,6 +1094,5 @@ The reason I did this was so that we would have a base to start building apps th
  * Extend the due date by a number of days the user provides
  * Filter the tasks by state such as overdue or high priority
  * Validation - some fields in the form should only accept numbers
- 
-Enjoy!
 
+Enjoy!
